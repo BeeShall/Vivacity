@@ -135,7 +135,7 @@ router.get('/logout', function (req, res, next) {
 
 router.post('/signup', function (req, res, next) {
   var mongo = req.app.locals.db;
-  auth.generateUser(mongo, req.body.username, req.body.password, req.body.email, req.body.zip, function (done) {    
+  auth.generateUser(mongo, req.body.username, req.body.password, req.body.email, function (done) {    
     var passport = req.app.locals.passport;
     var auth = passport.authenticate('local', {
       successRedirect: '/',

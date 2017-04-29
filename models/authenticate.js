@@ -1,14 +1,15 @@
+
 var bcrypt = require("bcryptjs");
 var LocalStrategy = require('passport-local').Strategy;
 
-exports.generateUser = function (db, user, pass, email, zip, callBack) {
+exports.generateUser = function (db, user, pass, email,callBack) {
     console.log(user)
     console.log(pass)
     bcrypt.genSalt(10, function (err, salt) {
         bcrypt.hash(pass, salt, function (err, hash) {
-            db.createUser(user, hash, email, zip, callBack);
-        })
-    })
+            db.createUser(user, hash, email, callBack);
+        });
+    });
 }
 
 exports.setAuthentication = function (passport, db) {
@@ -36,17 +37,10 @@ exports.setAuthentication = function (passport, db) {
             });
         }))
 
-
-
-
-
     passport.serializeUser(function (username, done) {
         done(null, username);
     });
     passport.deserializeUser(function (username, done) {
         done(null, username);
     });
-
-
-
 }
