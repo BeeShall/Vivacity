@@ -12,10 +12,9 @@ var Locator = require("../models/locator.js");
 var geooptions = {
   provider: 'google',
   httpAdapter: 'https',
-  formatter: null         
+  formatter: null
 };
 var geocoder = NodeGeocoder(geooptions);
-
 
 var ensureLoggedIn = function (req, res, next) {
   if (req.user) {
@@ -41,12 +40,10 @@ router.get('/gettopics', ensureLoggedIn, function (req, res, next) {
 		}
 
 		Core.GetTopics(parsed, function(result){
-
 			db.StoreMenu(req.user, result, function(){
 				res.setHeader('Content-Type', 'application/json');
 				res.send("Nice");
 			});
-
 		});
 	});
 });
@@ -64,14 +61,17 @@ router.get('/getmenu', ensureLoggedIn, function (req, res, next) {
 	});
 });
 
+router.post('/getfood', ensureLoggedIn, function (req, res, next) {
+	db.GetFoods(req.user, function(result){
+			res.setHeader('Content-Type', 'application/json');
+			console.log(result);
+	    res.send({success: true, result:result});	
+	});
+});
 
 
-router.post('/addfood', function(req, res, next){
-
-	console.log(req.body.name);
-	console.log(req.body.ndbno);
-
-	db.AddFood(req.user, req.body.name, req.body.ndbno, function(){
+router.post('/addfood', ensureLoggedIn, function(req, res, next){
+	db.AddFood(req.user, JSON.parse(req.body.food), function(){
   		res.setHeader('Content-Type', 'application/json');
 	    res.send({success: true});	
 		});
@@ -95,13 +95,21 @@ function TrimSearch(results, callback){
 router.post('/search', function(req, res, next){
 	res.setHeader('Content-Type', 'application/json');
 	if(req.body.keywords && req.body.keywords.trim() != ""){
-		Nutrition.search(req.body.keywords, function(results){
-				var model = {
-					success : true,
-					results : results
-				}
-				res.send(model);
+		db.GetSettings(req.user, function(result){
+			var data = [];
+			for(var key in result.settings){
+				if(result.settings[key] == 'true') data.push(key);
+			}
+			console.log(data);
+			Nutrition.search(req.body.keywords, result.settings, function(results){
+					var model = {
+						success : true,
+						results : results
+					}
+					res.send(model);
+			});
 		});
+
 	} else{
 		res.send({success:false});
 	}
@@ -132,6 +140,19 @@ router.post('/login', function (req, res, next) {
   auth(req, res);
 
 });
+
+router.get('/settings', ensureLoggedIn, function (req, res, next) {
+	res.render("settings");
+});
+
+router.post('/updatesettings', function (req, res, next) {
+	console.log(req.body);
+	db.UpdateSettings(req.user, req.body, function(){
+		res.setHeader('Content-Type', 'application/json');
+		res.send({success: true});	
+	})
+});
+
 
 
 router.get('/login', function (req, res, next) {

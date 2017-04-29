@@ -7,13 +7,33 @@ var nutritionix = new NutritionixClient({
 });
 
 
-exports.search = function(query, callback){
-    url = "https://api.edamam.com/search?q=" + query + "&app_id=d935592e&app_key=dfbf374e567d38f4076d719220f25df9";
+exports.search = function(query, filters, callback){
+    url = "https://api.edamam.com/search?q=" + query + "&app_id=d935592e&app_key=dfbf374e567d38f4076d719220f25df9&from=0&to=100";
 
     request(url, function (error, response, body) {
         if (!error && response.statusCode == 200) {
             var data = JSON.parse(body).hits;
-            callback(data);
+            var result = [];
+            console.log(filters);
+            for(var i = 0; i < data.length; i++){
+                var mySet = new Set();
+                var terms = data[i].recipe.dietLabels.concat(data[i].recipe.healthLabels);
+                for(var j = 0; j < terms.length; j++){ mySet.add(terms[j]);}
+                var flag = true;
+
+                for(var j = 0; j < filters.length; j++){ 
+                    console.log(filters[j]);
+                    flag = mySet.has(filters[j]);
+                    if(!flag) break;
+                }
+                if(!flag) continue;
+                console.log(mySet);
+                console.log(flag);
+                result.push(data[i]);
+            }
+
+
+            callback(result);
         }
         else {
             console.log(error);

@@ -15,17 +15,25 @@ MongoClient.connect(url, function (err, database) {
 });
 
 
-exports.AddFood = function(userid, foodname, foodid, callback){
+exports.AddFood = function(userid, food, callback){
     db.collection('users').update({
         _id : ObjectID(userid)
     }, 
-    {$addToSet : {foods : {name: foodname, ndbno : foodid}}},
+    {$push : {foods : food}},
     { upsert: true },
     function (err, results) {
         if (!err) {
             callback();
             console.log("okay");
         } else console.log(err)
+    });
+}
+
+exports.GetFoods = function(userid, callback){
+    db.collection('users').findOne({_id : ObjectID(userid)}, {"foods" : true}, function(err, result) {
+        if(err) console.log(err);
+        console.log(result);
+        callback(result);
     });
 }
 
@@ -45,6 +53,26 @@ exports.GetFood = function(userid, callBack){
                 callBack(doc.foods);
             }
         }
+    });
+}
+
+exports.GetSettings = function(userid, callback){
+    db.collection('users').findOne({_id : ObjectID(userid)}, {"settings" : true}, function(err, result) {
+        if(err) console.log(err);
+        callback(result);
+    })
+}
+
+exports.UpdateSettings = function(userid, setting, callback){
+    db.collection('users').update({
+        _id : ObjectID(userid)
+    }, 
+    {$set : {settings : setting}},
+    { upsert: true },
+    function (err, results) {
+        if (!err) {
+            callback();
+        } else console.log(err)
     });
 }
 

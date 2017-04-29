@@ -1,0 +1,147 @@
+extends layout
+
+block content
+	script.
+		$(".navbar li").removeClass("active");
+		$("#settingsref").addClass("active");
+		function addsuccess(){
+			console.log("Nice");
+			$(".success-bar").fadeIn(400, window.setTimeout(function(){
+				$(".success-bar").fadeOut(400, function(){});
+			}, 2000));
+		}
+	.container.primary-container
+		h1 Settings
+		.col-md-6
+			h4 Dietary Preferences
+			.container
+				.row
+					.col-sm-4.col-md-2.text-left
+						label.checkbox-inline
+							input#balanced(type='checkbox')
+							| Balance
+					.col-sm-4.col-md-2.text-left
+						label.checkbox-inline
+							input#high-protein(type='checkbox') 
+							| High Protein
+					.col-sm-4.col-md-2.text-left
+						label.checkbox-inline
+							input#high-fiber(type='checkbox') 
+							| High Fiber
+
+				.row
+					.col-sm-4.col-md-2.text-left
+						label.checkbox-inline
+							input#low-fat(type='checkbox') 
+							| Low Fat
+					.col-sm-4.col-md-2.text-left
+						label.checkbox-inline
+							input#low-carb(type='checkbox') 
+							| Low Carb
+					.col-sm-4.col-md-2.text-left
+						label.checkbox-inline
+							input#low-sodium(type='checkbox') 
+							| Low Sodium
+
+		.col-md-6(style='border-left: 1px solid black;')
+			h4 Dietary Restrictions
+			.container
+				.row
+					.col-sm-4.col-md-2.text-left
+						label.checkbox-inline
+							input#vegan(type='checkbox') 
+							| Vegan
+					.col-sm-4.col-md-2.text-left
+						label.checkbox-inline
+							input#vegetarian(type='checkbox') 
+							| Vegetarian
+					.col-sm-4.col-md-2.text-left
+						label.checkbox-inline
+							input#dairy-free(type='checkbox') 
+							| Dairy Free
+
+				.row
+					.col-sm-4.col-md-2.text-left
+						label.checkbox-inline
+							input#gluten-free(type='checkbox') 
+							| Gluten Free
+					.col-sm-4.col-md-2.text-left
+						label.checkbox-inline
+							input#wheat-free(type='checkbox') 
+							| Wheat Free
+					.col-sm-4.col-md-2.text-left
+						label.checkbox-inline
+							input#fat-free(type='checkbox') 
+							| Fat Free
+				.row
+					.col-sm-4.col-md-2.text-left
+						label.checkbox-inline
+							input#low-sugar(type='checkbox') 
+							| Low Sugar
+					.col-sm-4.col-md-2.text-left
+						label.checkbox-inline
+							input#egg-free(type='checkbox') 
+							| Egg Free
+					.col-sm-4.col-md-2.text-left
+						label.checkbox-inline
+							input#peanut-free(type='checkbox') 
+							| Peanut Free
+
+				.row
+					.col-sm-4.col-md-2.text-left
+						label.checkbox-inline
+							input#tree-nut-free(type='checkbox') 
+							| Tree Nut Free
+					.col-sm-4.col-md-2.text-left
+						label.checkbox-inline
+							input#soy-free(type='checkbox') 
+							| Soy Free
+					.col-sm-4.col-md-2.text-left
+						label.checkbox-inline
+							input#shellfish-free(type='checkbox') 
+							| Shellfish Free
+
+
+		button.btn.btn-primary.regular-button(type="button", onclick='Save()') Save
+		script.
+			function Save(){
+				var data = {
+					"Balanced" : document.getElementById("balanced").checked,
+					"High-Protein" : document.getElementById("high-protein").checked,
+					"High-Fiber" : document.getElementById("high-fiber").checked,
+					"Low-Fat" : document.getElementById("low-fat").checked,
+					"Low-Carb" : document.getElementById("low-carb").checked,
+					"Low-Sodium" : document.getElementById("low-sodium").checked,
+					"Vegan" : document.getElementById("vegan").checked,
+					"Vegetarian" : document.getElementById("vegetarian").checked,
+					"Dairy-Free" : document.getElementById("dairy-free").checked,
+					"Gluten-Free" : document.getElementById("gluten-free").checked,
+					"Wheat-Free" : document.getElementById("wheat-free").checked,
+					"Fat-Free" : document.getElementById("fat-free").checked,
+					"Low-Sugar" : document.getElementById("low-sugar").checked,
+					"Egg-Free" : document.getElementById("egg-free").checked,
+					"Peanut-Free" : document.getElementById("peanut-free").checked,
+					"Tree-Nut-Free" : document.getElementById("tree-nut-free").checked,
+					"Soy-Free" : document.getElementById("soy-free").checked,
+					"Shellfish-Free" : document.getElementById("shellfish-free").checked
+				};
+				$.ajax({
+					type: "POST",
+					url: "/updatesettings",
+					data: data,
+					success: function(msg, status, jqXHR){
+						if(status == "success"){
+							console.log(msg);
+						} else {
+							alert("Nope.");
+						}
+					},
+					dataType: "JSON"
+				}).done(function(){addsuccess();});
+			}
+
+	br
+	br
+	.success-bar
+		p Food added
+			i(style="margin-left: 10px;").fa.fa-check

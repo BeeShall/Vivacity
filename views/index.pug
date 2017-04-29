@@ -7,6 +7,56 @@ block content
 
 	script.
 		var DATA = [];
+
+		function AddFood(){
+			console.log("here");
+			console.log(DATA[$("#IndexHolder").val()]);
+			console.log("There");
+			data = {
+				food : JSON.stringify(DATA[$("#IndexHolder").val()])
+			}
+			$.ajax({
+				type: "POST",
+				url: "/addfood",
+				data: data,
+				success: function(msg, status, jqXHR){
+					if(status == "success"){
+						console.log(msg);
+						GetFoods();
+					}
+				},
+				dataType: "JSON"
+			});		
+		}
+
+		function SetGroceries(data){
+			$("#GroceryAnchor").empty();
+			console.log("Cool");
+			console.log(data);
+			data = data.result;
+
+			for(var i = 0; i < data.foods.length; i++){
+				$("#GroceryAnchor").append("<tr><td onclick='SelectGroceryItem(" + JSON.stringify(data.foods[i]) + ")'>" + data.foods[i].recipe.label + "</td></tr><hr>");
+ 
+			}
+
+		}
+
+
+		function GetFoods(){
+			$.ajax({
+				type: "POST",
+				url: "/getfood",
+				data:{},
+				success: function(msg, status, jqXHR){
+					if(status == "success"){
+						SetGroceries(msg);
+					}
+				},
+				dataType: "JSON"
+			});
+		}
+
 		function SubmitSearch(){
 			data = {
 				keywords : $("#searchbar").val()
@@ -48,6 +98,7 @@ block content
 		
 		function BuildResultTable(data){
 			DATA = data.results;
+			$("#SearchTable").empty();
 			for(var i = 0; i < data.results.length; i++){
 				console.log(data);
 				$("#SearchTable").append("<tr onclick=\"SelectRecipe("+ i + ")\"><td>" + data.results[i].recipe.label + "</td><td style='text-align: right;'><img src='" + data.results[i].recipe.image  + "' height='50' width='50'></img></td></tr>");
@@ -60,22 +111,55 @@ block content
 			});
 		}
 
-		function SelectRecipe(index){
+		function SelectGroceryItem(data){
+			DrawChart(data.recipe.totalDaily);
 
-			var data = DATA[index];
-			console.log(data);
+			$("#IndexHolder").val(0);
+			$("#ingredient_anchor").empty();
+			$("#title_anchor").text(data.recipe.label);
+			$("#source_anchor").text("from " + data.recipe.source);
+			$("#label_anchor").empty();
 
 			for(var i = 0; i < data.recipe.ingredients.length; i++){
-				$("#ingredient_anchor").append("");
+				$("#ingredient_anchor").append("<tr> <td> " + data.recipe.ingredients[i].text + " </td> </tr>");
 			}
+			var terms = data.recipe.dietLabels.concat(data.recipe.healthLabels);
+			for(var i = 0; i < terms.length; i++){
+				$("#label_anchor").append("<tr> <td> " + terms[i] + " </td> </tr>");
+			}
+
 
 			$("#listings").fadeOut(200, "swing", function(){
 				$("#details").fadeIn(200, "swing", function(){});
 			});
 		}
 
+		function SelectRecipe(index){
 
-	#my_container.fatsecret_container
+			var data = DATA[index];
+			console.log(data);
+			DrawChart(data.recipe.totalDaily);
+
+			$("#IndexHolder").val(index);
+			$("#ingredient_anchor").empty();
+			$("#title_anchor").text(data.recipe.label);
+			$("#source_anchor").text("from " + data.recipe.source);
+			$("#label_anchor").empty();
+
+			for(var i = 0; i < data.recipe.ingredients.length; i++){
+				$("#ingredient_anchor").append("<tr> <td> " + data.recipe.ingredients[i].text + " </td> </tr>");
+			}
+			var terms = data.recipe.dietLabels.concat(data.recipe.healthLabels);
+			for(var i = 0; i < terms.length; i++){
+				$("#label_anchor").append("<tr> <td> " + terms[i] + " </td> </tr>");
+			}
+
+
+			$("#listings").fadeOut(200, "swing", function(){
+				$("#details").fadeIn(200, "swing", function(){});
+			});
+		}
+
 
 	#map
 		script( src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false")
@@ -93,59 +177,78 @@ block content
 						i.glyphicon.glyphicon-search
 
 			br
-			.scrollable(style='max-height: 550px;')
+			.scrollable
 				table.datatable
 					tbody#SearchTable
 
-		#details.scrollable(style='display:none;')
+
+		#details(style='display:none;').scrollable
+			input#IndexHolder(type="hidden")
 			button.btn.btn-primary.regular-button(style='width: 100px;', onclick='Back()')
-				i.fa.fa-angle-left(style='margin-right: 15px')
+				i.fa.fa-angle-left(style='margin-right: 15px; float: left;')
 				| Back 
+			button.btn.btn-primary.regular-button(style='width: 100px;', onclick='AddFood()') Add
+				i.fa.fa-plus(style='margin-left: 15px; text-align: right;')
+			
+			
+			h2#title_anchor
+			small#source_anchor
+
+			hr
 
 			.ingredients
+				h3 Ingredients
 				table
 					tbody#ingredient_anchor
-
+			hr
+			.labels
+				h3 Labels
+				table
+					tbody#label_anchor
+			hr
 			.radarChart
 
 
+	.grocery-side-bar
+		h2 Groceries
+		hr
+		.scrollable
+			table.datatable
+					tbody#GroceryAnchor
+
+
 	script.
+		function DrawChart(input){
+			var margin = {top: 100, right: 50, bottom: 100, left: 80},
+			width = Math.min(400, window.innerWidth - 10) - margin.left - margin.right,
+			height = Math.min(width, window.innerHeight - margin.top - margin.bottom - 20);
 
-		var margin = {top: 100, right: 50, bottom: 100, left: 80},
-		width = Math.min(400, window.innerWidth - 10) - margin.left - margin.right,
-		height = Math.min(width, window.innerHeight - margin.top - margin.bottom - 20);
+			var data = [];
+			var max = 0;
+			for (var key in input) {
+				if (input.hasOwnProperty(key) && key != "VITK1") {
+					if(input[key].quantity / 100.0 > max) max = input[key].quantity / 100.0;
+					data.push({axis:input[key].label, value: input[key].quantity / 100.0});
+				}
+			}
+			data = [data];
+			console.log(data);
+
+			var color = d3.scale.ordinal().range(["#EDC951","#CC333F","#00A0B0"]);
 				
-		////////////////////////////////////////////////////////////// 
-		////////////////////////// Data ////////////////////////////// 
-		////////////////////////////////////////////////////////////// 
+			var radarChartOptions = {
+				w: width,
+				h: height,
+				margin: margin,
+				maxValue: 1.0,
+				levels: 5,
+				roundStrokes: true,
+				color: color
+			};
 
-		var data = [
-					[//iPhone
-					{axis:"Battery Life",value:0.22},
-					{axis:"Brand",value:0.28},
-					{axis:"Contract Cost",value:0.29},
-					{axis:"Design And Quality",value:0.17},
-					{axis:"Have Internet Connectivity",value:0.22},
-					{axis:"Large Screen",value:0.02},
-					{axis:"Price Of Device",value:0.21},
-					{axis:"To Be A Smartphone",value:0.50}			
-					]
-				];
-		////////////////////////////////////////////////////////////// 
-		//////////////////// Draw the Chart ////////////////////////// 
-		////////////////////////////////////////////////////////////// 
+			//Call function to draw the Radar chart
+			RadarChart(".radarChart", data, radarChartOptions);
 
-		var color = d3.scale.ordinal()
-			.range(["#EDC951","#CC333F","#00A0B0"]);
-			
-		var radarChartOptions = {
-			w: width,
-			h: height,
-			margin: margin,
-			maxValue: 0.5,
-			levels: 5,
-			roundStrokes: true,
-			color: color
-		};
-		//Call function to draw the Radar chart
-		RadarChart(".radarChart", data, radarChartOptions);
+
+		}
+		GetFoods();
