@@ -14,11 +14,26 @@ MongoClient.connect(url, function (err, database) {
     }
 });
 
+
+exports.AddFood = function(userid, foodname, foodid, callback){
+    db.collection('users').update({
+        _id : ObjectID(userid)
+    }, 
+    {$push : {foods : {name: foodname, ndbno : foodid}}},
+    { upsert: true },
+    function (err, results) {
+        if (!err) {
+            callback();
+        } else console.log(err)
+    });   
+}
+
 exports.createUser = function (userName, password, email, callBack) {
     db.collection('users').insertOne({
         username: userName,
         password: password,
         email: email,
+        foods: []
     }, function (err, results) {
         if (!err) {
             console.log("User created")

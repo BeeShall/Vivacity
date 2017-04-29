@@ -1,0 +1,51 @@
+extends layout
+
+block content
+	script.
+		$(".navbar li").removeClass("active");
+		$("#discoverref").addClass("active");
+
+		function addsuccess(){
+			console.log("Nice");
+			$(".success-bar").animate({display : "block"}, 500,"swing", setTimeout(function(){
+				$(".success-bar").animate({display : "none"}, 500,"swing", function(){});
+			}, 3000));
+		}
+
+		function AddFood(ndbno, name){
+			var data = {
+				name : name,
+				ndbno : ndbno
+			};
+			$.ajax({
+				type: "POST",
+				url: "/addfood",
+				data: data,
+				success: addsuccess,
+				dataType: "JSON"
+			});
+		}
+
+
+
+	form(style="display:none;")
+	.container.primary-container
+		h1 Food
+		small Let us know what foods you like
+
+		hr
+
+		table.datatable
+			tbody
+				- for(var i = 0; i < items.length; i++){	
+					tr
+						td= items[i].name
+						td
+							button.btn.btn-primary.regular-button(onclick="AddFood(\"" + items[i].ndbno + "\", \"" + items[i].name + "\")") Add 
+								i.fa.fa-plus
+
+				-	}
+
+	.success-bar
+		p Food added
+			i(style="margin-left: 10px;").fa.fa-check

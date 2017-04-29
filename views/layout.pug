@@ -3,6 +3,7 @@ html
 	head
 		title Vivacity
 		link(rel="stylesheet", href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css", integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7",crossorigin="anonymous")
+		link(href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css", rel="stylesheet", integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN", crossorigin="anonymous")
 		link(rel="stylesheet", href="/tags/dist/bootstrap-tagsinput.css")
 		link(rel='stylesheet', href='/stylesheets/style.css')
 	body
@@ -28,7 +29,7 @@ html
 								li
 									a(href="/logout") Logout
 							.col-sm-6.col-md-6
-								form.navbar-form(role="search", action="/", method="get")
+								form.navbar-form(role="search", action="/search_browser", method="post")
 									.input-group
 										input.form-control(type="text", placeholder="search", tabindex="2", name="keywords")
 										.input-group-btn

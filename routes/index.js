@@ -5,6 +5,7 @@ var db = require('../models/database.js')
 var ObjectID = require('mongodb').ObjectID;
 var search = require('../models/search.js')
 var NodeGeocoder = require('node-geocoder');
+var Nutrition = require('../models/nutrition.js')
 
 var geooptions = {
   provider: 'google',
@@ -38,57 +39,61 @@ router.get('/', ensureLoggedIn, function (req, res, next) {
 		});
 });
 
+
+
 function GetNearby(coords, callback){
 	callback(coords);
 }
 
-router.post('/search', function(req, res, next){
-	if(req.body.keywords && req.body.keywords != ""){
-		search.search(req, db, function(results){
-	  		res.setHeader('Content-Type', 'application/json');
-			res.send({items : results});		
-		});	
-	} else{
-		GetNearby({}, function(coords){
-			var results = coords["nearbyevents"].concat(coords["nearbyprojects"]);
-	  		res.setHeader('Content-Type', 'application/json');
-			res.send({items : results});
-		});
-	}
+
+router.post('/addfood', function(req, res, next){
+
+	console.log("nice");
+	res.send("success");
+
 });
 
 
+function TrimSearch(results, callback){
+			// Trim the results
+			var model = {items : []};
+			for(var i = 0; i < results.list.item.length; i++){
+				var parts = results.list.item[i].name.split(", ");
+				parts.pop();
+				var title = parts.join(" ");
+				console.log(title);
+				model.items.push({ name : title, ndbno : results.list.item[i].ndbno} );
+			}
 
+			callback(model);
+}
+
+router.post('/search', function(req, res, next){
+	res.setHeader('Content-Type', 'application/json');
+	if(req.body.keywords && req.body.keywords.trim() != ""){
+		Nutrition.searchNutritionItem(req.body.keywords, function(err, results){
+			// Trim the results
+			TrimSearch(results, function(model){
+				res.send(model);
+			});
+		});
+	} else{
+		res.send({});
+	}
+});
 
 router.post('/search_browser', ensureLoggedIn, function(req, res, next){
-	if(req.body.keywords && req.body.keywords != ""){
-		search.search(req, db, function(results){
-			res.render("discover", {items : results});
-		});	
-	} else{
-		GetNearby({}, function(coords){
-			var results = coords["nearbyevents"].concat(coords["nearbyprojects"]);
-			res.render("discover", {items : results});
+	if(req.body.keywords && req.body.keywords.trim() != ""){
+		Nutrition.searchNutritionItem(req.body.keywords, function(err, results){
+			// Trim the results
+			TrimSearch(results, function(model){
+				res.render("food_items", model);
+			});
 		});
+	} else{
+		res.redirect('/');
 	}
 
-});
-
-
-router.post('/joinproject', ensureLoggedIn, function(req, res, next){
-	console.log(req.body.itemid);
-	db.JoinProject(req.body.itemid, req.user, function(){
-  		res.setHeader('Content-Type', 'application/json');
-	    res.send({success: true});
-	});
-});
-
-
-router.post('/joinevent', ensureLoggedIn, function(req, res, next){
-	db.JoinEvent(req.body.itemid, req.user, function(){
-  		res.setHeader('Content-Type', 'application/json');
-	    res.send({success: true});
-	});	
 });
 
 
@@ -98,7 +103,6 @@ function GetCoordinates(addr, callback){
 }
 
 // AUTHENTICATION
-
 router.post('/login', function (req, res, next) {
   var passport = req.app.locals.passport;
   var auth = passport.authenticate('local', {
@@ -170,7 +174,7 @@ router.post('/login_mobile', function (req, res, next) {
 
 router.post('/signup_mobile', function (req, res, next) {
   var mongo = req.app.locals.db;
-  auth.generateUser(mongo, req.body.username, req.body.password, req.body.email, req.body.zip, function (done) {
+  auth.generateUser(mongo, req.body.username, req.body.password, req.body.email, function (done) {
     
     var passport = req.app.locals.passport;
     var auth = passport.authenticate('local', function(err, user, info){

@@ -1,19 +1,14 @@
 extends layout
 
 block content
-	script(src="/javascripts/map.js")
-	script.
-		$(document).ready(function(){
-			var counter = 30424;
-			$("#counter").text(counter);
-			setInterval(function() {
-				counter += Math.round(Math.random() * (5 + 1) - 1);
-				$("#counter").text(counter);
-			}, Math.random() * (3000 - 500) + 500);
-		});
+	script(src="http://platform.fatsecret.com/js?key=cbe2847882ed46d1b27ed6f837d901e0")
 
+	script(src="/javascripts/map.js")
 	
+	#my_container.fatsecret_container
+
 	#map
 		script( src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false")
 		script.
 			initMap(!{JSON.stringify(coords)})
+			
