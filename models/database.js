@@ -20,7 +20,7 @@ exports.AddFood = function(userid, foodname, foodid, callback){
     db.collection('users').update({
         _id : ObjectID(userid)
     }, 
-    {$push : {foods : {name: foodname, ndbno : foodid}}},
+    {$addToSet : {foods : {name: foodname, ndbno : foodid}}},
     { upsert: true },
     function (err, results) {
         if (!err) {
