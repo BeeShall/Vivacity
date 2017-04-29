@@ -1,0 +1,19 @@
+extends layout
+
+block content
+	script(src="/javascripts/map.js")
+	script.
+		$(document).ready(function(){
+			var counter = 30424;
+			$("#counter").text(counter);
+			setInterval(function() {
+				counter += Math.round(Math.random() * (5 + 1) - 1);
+				$("#counter").text(counter);
+			}, Math.random() * (3000 - 500) + 500);
+		});
+
+	
+	#map
+		script( src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false")
+		script.
+			initMap(!{JSON.stringify(coords)})

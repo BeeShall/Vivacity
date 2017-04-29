@@ -1,0 +1,29 @@
+extends layout
+
+block content
+	.container.login-form
+		script.
+			$(".navbar *").css("display", "none");
+		.header
+			img(src="/images/flower_big.png")
+			h1 Vivacity
+		small Please enter your information to sign up.
+
+		form(action="/signup", method="post", id="LoginForm")
+			.form-group.row
+				label.col-md-2.col-sm-2.col-md-offset-1.col-sm-offset-1.col-form-label Username
+				.col-md-8.col-sm-8
+					input.form-control(type="text", placeholder="Spongebob", name="username", required)
+			br
+			.form-group.row
+				label.col-md-2.col-sm-2.col-md-offset-1.col-sm-offset-1.col-form-label Password
+				.col-md-8.col-sm-8
+					input.form-control(type="password", placeholder="Squarepants", name="password", required)
+			br
+			.form-group.row
+				label.col-md-2.col-sm-2.col-md-offset-1.col-sm-offset-1.col-form-label Email
+				.col-md-8.col-sm-8
+					input.form-control(type="email", placeholder="Spongebob@bikinibottom.com", name="email", required)
+			br
+
+			button.btn.btn-primary.regular-button(type="submit") Sign up

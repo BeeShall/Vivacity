@@ -1,0 +1,31 @@
+{
+  "name": "openwit",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "@google/maps": "*",
+    "bcryptjs": "latest",
+    "body-parser": "~1.15.2",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.2.0",
+    "express": "^4.14.1",
+    "express-session": "^1.15.0",
+    "fullcalendar": "^3.1.0",
+    "jade": "~1.11.0",
+    "less-middleware": "^2.2.0",
+    "moment": "^2.17.1",
+    "mongodb": "^2.2.22",
+    "morgan": "~1.7.0",
+    "node-geocoder": "^3.16.0",
+    "passport": "~0.1.17",
+    "passport-local": "~0.1.6",
+    "pug": "^2.0.0-beta11",
+    "serve-favicon": "~2.3.0",
+    "words-and-hyphens":"*",
+    "stopword":"*",
+    "hyphenation.en-us":"*"
+  }
+}

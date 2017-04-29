@@ -1,0 +1,236 @@
+
+@import url('https://fonts.googleapis.com/css?family=Questrial');
+@primary: #0EBFE9;
+@primary_trans:	rgba(14,191,233, 0.2);
+html,body {
+	width:100%;
+	height:100%;
+	margin:0;
+	padding:0;
+	font-family: "Questrial";
+}
+
+hr {
+	border-color: @primary;
+}
+
+a {
+	color: @primary;
+}
+
+.fast-transition() {
+  transition-duration: .2s;
+}
+
+.navbar-brand {
+	font-weight: 700;
+} 
+
+.navbar-default .navbar-brand {
+	color: black;
+}
+
+.navbar-default .navbar-brand:hover {
+	color: @primary;
+}
+
+.navbar-default {
+	background-color: rgba(255, 255, 255, .8);
+	border-bottom: 1px solid @primary;
+}
+
+.navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
+	color: white;
+	background-color: @primary;
+}
+
+.navbar-default .navbar-nav > li > a {
+	color: black;
+}
+
+.navbar-default .navbar-nav > li > a:hover {
+	color: @primary;
+}
+
+.search-button{
+	background: white;
+}
+
+.search-button:hover{
+	background: @primary;
+	color: white;
+}
+
+#map {
+	background-image: white;
+    display: block;
+    position:absolute;
+    height:auto;
+    bottom:0;
+    top:0;
+    left:0;
+    right:0;
+    margin-top:0px; /* adjust top margin to your header height */
+}
+
+.title-text {
+	font-size: 10vmax;
+	color: @primary;
+}
+
+.sub-text {
+	color: @primary;
+}
+
+.login-form {
+	text-align:center;
+	margin-top: 100px;
+}
+
+.login-form > h1 {
+	font-size: 5vmax;
+}
+
+.login-form > form {
+	margin-top: 50px;
+}
+
+
+.header{
+	display:inline-block;
+	width: 100%;
+}
+
+.header h1{
+	display:inline-block;
+	vertical-align: middle;
+	font-size: 60px;
+}
+.header img{
+	display:inline-block;
+	width: 80px;
+	vertical-align: middle;
+	margin-right: 20px;
+}
+
+.login-form {
+	label {
+		font-size: 18px;
+		vertical-align: middle;
+	}
+}
+
+.btn, .btn-primary, .btn-default, .btn:active, 
+.btn-primary:active, .btn-default:active, 
+.btn:focus, .btn-primary:focus, .btn-default:focus {
+	.fast-transition;
+
+}
+
+.button-inverted, .regular-button:focus, .regular-button:active {
+	background: transparent;
+	border: 1px solid @primary;
+	outline: none;
+	border-radius: 4px;
+	color: @primary;
+}
+
+
+.regular-button{
+	background: transparent;
+	border: 1px solid @primary;
+	outline: none;
+	border-radius: 4px;
+	color: @primary;
+	height: 35px;
+	width: 140px;
+}
+
+.big-button {
+	height: 60px;
+	width: 250px;
+	font-size: larger;
+}
+
+.btn:hover, .btn-primary:hover, .btn-default:hover {
+	background-color: @primary;
+	border: 1px solid @primary;
+	color: white;
+}
+
+.counter-container{
+	position: absolute; 
+	left: 0; 
+	bottom: 0;
+	padding: 10px;
+	color: @primary;
+	background: rgba(255, 255, 255, .6);
+	h1{
+		margin-right: 10px;
+		font-size: 80px;
+		display: inline-block;
+	}
+	p{
+		font-size: 20px;
+		display: inline-block;
+	}
+}
+
+
+.primary-container{
+	margin-top: 80px;
+}
+
+.creation-form {
+	padding: 10px;
+}
+
+
+.info-small {
+	margin: 3px !important;
+}
+
+.hoverable-head{
+	cursor: pointer;
+}
+
+.hoverable-head:hover{
+	color: @primary;
+}
+
+.invisitable {
+	td {
+		min-width: 200px;
+	}
+
+	tr td {
+		padding: 5px;
+	}
+
+	.bold-cell {
+		font-weight: bold;
+	}
+}
+
+.datatable{
+	width: 100%;
+	font-size: 14px;
+	tr{
+		border-bottom: 1px solid lightgrey;
+		width: 100%;
+	}
+	tr td {
+		text-overflow: ellipsis; 
+		padding: 5px;
+		padding-bottom: 10px;
+		padding-top: 10px;
+		min-width: 200px;
+		cursor: pointer;
+	}
+	tr:hover{
+		.fast-transition();
+		background-color: @primary_trans;
+	}
+}
+
+

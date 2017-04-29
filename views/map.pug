@@ -1,0 +1,16 @@
+extends layout
+
+block content
+	script.
+		function initMap() {
+			var map;
+			map = new google.maps.Map(document.getElementById('map'), {
+		    center: {lat: 52.8666082, lng: -1.2123896},
+		    zoom: 1
+		  });
+		}
+
+	.container
+		#map
+			script( src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&callback=initMap")
+

@@ -1,0 +1,54 @@
+extends layout
+
+block content
+	script.
+		$(".navbar li").removeClass("active");
+		$("#discoverref").addClass("active");
+
+		function SelectEvent(eventid){
+			$("#EventForm > input").val(eventid);
+			$("#EventForm").submit();
+		}
+
+
+		function SelectProject(projectid){
+			$("#ProjectForm > input").val(projectid);
+			$("#ProjectForm").submit();
+		}
+
+
+	form(style="display:none;")
+	.container.primary-container
+		h1 Discover
+		small Find a project or event that fits your interests
+
+		hr
+
+		table.datatable
+			tbody
+				- for(var i = 0; i < items.length; i++){				
+					- if(items[i].url){
+						tr(onclick="SelectProject(\"" + items[i]._id + "\")")
+							td= items[i].title
+							td= items[i].location
+							td
+								a(href=url, target='_blank')= items[i].url
+							td Project
+					- } else{
+						- var mydate = new Date(items[i].date + "T" + items[i].time);
+						- var datestring = mydate.toUTCString();	
+						tr(onclick="SelectEvent(\"" + items[i]._id + "\")")
+							td= items[i].title
+							td= items[i].location
+							td= datestring
+							td Event
+					- }
+
+				-	}
+
+
+	form#EventForm(style="display:none;", action="/getEventData", method="post")
+		input(type="text", name="eventid")
+
+	form#ProjectForm(style="display:none;", action="/getProjectData", method="post")
+		input(type="text", name="projectid")

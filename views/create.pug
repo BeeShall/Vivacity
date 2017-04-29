@@ -1,0 +1,123 @@
+extends layout
+
+block content
+	script.
+		$(".navbar li").removeClass("active");
+		$("#createref").addClass("active");
+
+		function SubmitEvent(){
+			$("#EventForm").submit();
+		}
+
+		function SubmitProject(){
+			$("#ProjectForm").submit();
+		}
+	.container.primary-container
+		h1 Create
+		small Create an Event or Project.  
+			| Once posted, anyone will be able to rsvp and join your event!  
+
+		hr
+
+		ul.nav.nav-tabs
+			li.active
+				a(href="#EventTab", data-toggle="tab") Event
+			li
+				a(href="#ProjecTab", data-toggle="tab") Project
+
+		.tab-content
+			.tab-pane#EventTab.active
+				form(action="/createEvent", method="post", id="EventForm").container.creation-form
+					h2 Create an Event
+					small Host your own event for other women in tech!
+					br
+					br
+					.row
+						.col-md-6.col-sm-12.col-lg-6
+							.form-group.row
+								label.col-md-2.col-sm-2.col-md-offset-1.col-sm-offset-1.col-form-label Title
+								.col-md-8.col-sm-8
+									input.form-control(type="text", placeholder="Next up: Node", name="title", required)
+							br
+							.form-group.row
+								label.col-md-2.col-sm-2.col-md-offset-1.col-sm-offset-1.col-form-label Description
+								.col-md-8.col-sm-8
+									textarea.form-control(rows="3", placeholder="Using Node.js to bring women together!  Knock on the side door!", name="description", required)
+							br
+							.form-group.row
+								label.col-md-2.col-sm-2.col-md-offset-1.col-sm-offset-1.col-form-label Tags
+								.col-md-8.col-sm-8
+									input.form-control(type="text", value="" data-role="tagsinput", style="min-width: 200px;", name="tags")
+
+
+						.col-md-6.col-sm-12.col-lg-6
+
+							.form-group.row
+								label.col-md-2.col-sm-2.col-md-offset-1.col-sm-offset-1.col-form-label Location
+								.col-md-8.col-sm-8
+									input.form-control(type="text", placeholder="505 Ramapo Valley Road, Mahwah, NJ", name="location", required)
+							br
+							.form-group.row
+								label.col-md-2.col-sm-2.col-md-offset-1.col-sm-offset-1.col-form-label Date
+								.col-md-8.col-sm-8
+									input.form-control(type="date", name="date", required)
+							br
+							.form-group.row
+								label.col-md-2.col-sm-2.col-md-offset-1.col-sm-offset-1.col-form-label Time
+								.col-md-8.col-sm-8
+									input.form-control(type="time", name="time", required)
+							br
+
+				.row
+					button.btn.btn-primary.regular-button(onclick="SubmitEvent()") Create
+
+
+
+
+			.tab-pane#ProjecTab
+				form(action="/createProject", method="post", id="ProjectForm").container.creation-form
+					h2 Create a Project
+					small Create a Project and let other women in tech help you build it!
+					br
+					br
+					.row
+						.col-md-6.col-sm-12.col-lg-6
+							.form-group.row
+								label.col-md-2.col-sm-2.col-md-offset-1.col-sm-offset-1.col-form-label Title
+								.col-md-8.col-sm-8
+									input.form-control(type="text", placeholder="OpenWIT", name="title", required)
+							br
+							.form-group.row
+								label.col-md-2.col-sm-2.col-md-offset-1.col-sm-offset-1.col-form-label Description
+								.col-md-8.col-sm-8
+									textarea.form-control(rows="3", placeholder="Help us bring women together in science!", name="description", required)
+							br
+							.form-group.row
+								label.col-md-2.col-sm-2.col-md-offset-1.col-sm-offset-1.col-form-label Tags
+								.col-md-8.col-sm-8
+									input.form-control(type="text", value="" data-role="tagsinput", style="min-width: 200px;", name="tags")
+
+						.col-md-6.col-sm-12.col-lg-6
+							.form-group.row
+								label.col-md-2.col-sm-2.col-md-offset-1.col-sm-offset-1.col-form-label Location
+								.col-md-8.col-sm-8
+									input.form-control(type="text", placeholder="505 Ramapo Valley Road, Mahwah, NJ", name="location", required)
+							br
+							.form-group.row
+								label.col-md-2.col-sm-2.col-md-offset-1.col-sm-offset-1.col-form-label Experience Level
+								.col-md-8.col-sm-8
+									select.form-control(type="text", name="experience", required)
+										option Beginner
+										option Novice
+										option Intermediate
+										option Expert
+							br
+							.form-group.row
+								label.col-md-2.col-sm-2.col-md-offset-1.col-sm-offset-1.col-form-label URL
+								.col-md-8.col-sm-8
+									input.form-control(type="url" placeholder="A link to your project repo or website", name="url")
+							br
+				.row
+					button.btn.btn-primary.regular-button(onclick="SubmitProject()") Create
+
+
