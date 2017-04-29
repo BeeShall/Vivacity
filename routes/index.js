@@ -6,6 +6,8 @@ var ObjectID = require('mongodb').ObjectID;
 var search = require('../models/search.js')
 var NodeGeocoder = require('node-geocoder');
 var Nutrition = require('../models/nutrition.js')
+var Core = require("../models/core.js");
+var Locator = require("../models/locator.js");
 
 var geooptions = {
   provider: 'google',
@@ -25,23 +27,43 @@ var ensureLoggedIn = function (req, res, next) {
 
 // WEB ROUTES
 router.get('/', ensureLoggedIn, function (req, res, next) {
-		GetCoordinates("07430", function(err, result){
-			if(!err){
-				GetNearby({coords:{lat:result[0].latitude, lng:result[0].longitude}}, function(coords){
-					res.render("index", coords);
-				});
-			}else{
-				console.log(err);
-				res.render("index");
-			}
-		});
+	db.GetMenu(req.user, function(result){
+		res.render("index", {menu: result});
+	});
 });
 
+router.get('/gettopics', ensureLoggedIn, function (req, res, next) {
+	db.GetFood(req.user, function(foods){
+
+		var parsed = [];
+		for(var i = 0; i < foods.length; i++){
+			parsed.push(foods[i].name);
+		}
+
+		Core.GetTopics(parsed, function(result){
+
+			db.StoreMenu(req.user, result, function(){
+				res.setHeader('Content-Type', 'application/json');
+				res.send("Nice");
+			});
+
+		});
+	});
+});
 
 
 function GetNearby(coords, callback){
 	callback(coords);
 }
+
+
+router.get('/getmenu', ensureLoggedIn, function (req, res, next) {
+	db.GetMenu(req.user, function(result){
+		res.setHeader('Content-Type', 'application/json');
+		res.send({success:true, menu:result});
+	});
+});
+
 
 
 router.post('/addfood', function(req, res, next){
@@ -73,31 +95,27 @@ function TrimSearch(results, callback){
 router.post('/search', function(req, res, next){
 	res.setHeader('Content-Type', 'application/json');
 	if(req.body.keywords && req.body.keywords.trim() != ""){
-		Nutrition.searchNutritionItem(req.body.keywords, function(err, results){
-			// Trim the results
-			TrimSearch(results, function(model){
+		Nutrition.search(req.body.keywords, function(results){
+				var model = {
+					success : true,
+					results : results
+				}
 				res.send(model);
-			});
 		});
 	} else{
-		res.send({});
+		res.send({success:false});
 	}
 });
 
-router.post('/search_browser', ensureLoggedIn, function(req, res, next){
-	if(req.body.keywords && req.body.keywords.trim() != ""){
-		Nutrition.searchNutritionItem(req.body.keywords, function(err, results){
-			// Trim the results
-			TrimSearch(results, function(model){
-				res.render("food_items", model);
-			});
-		});
-	} else{
-		res.redirect('/');
-	}
+router.post('/findfood', function(req, res, next){
+	console.log(req.body.item);
+	console.log(req.body.brand);
+	res.setHeader('Content-Type', 'application/json');
+	Locator.getLocations(req.body.brand, req.body.item, function(result){
+			res.send({success:true, result:result});
+	});
 
 });
-
 
 // REFACTORED BEHAVIOR
 function GetCoordinates(addr, callback){

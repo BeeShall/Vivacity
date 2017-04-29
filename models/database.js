@@ -61,6 +61,14 @@ exports.StoreMenu = function(userid, menu, callback){
     });
 }
 
+exports.GetMenu = function(userid, callback) {
+    db.collection('users').findOne({_id : ObjectID(userid)}, {"menu" : true}, function(err, result) {
+        if(err) console.log(err);
+
+        callback(result);
+    })
+}
+
 
 
 exports.createUser = function (userName, password, email, callBack) {

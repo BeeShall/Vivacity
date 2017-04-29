@@ -4,11 +4,148 @@ block content
 	script(src="http://platform.fatsecret.com/js?key=cbe2847882ed46d1b27ed6f837d901e0")
 
 	script(src="/javascripts/map.js")
-	
+
+	script.
+		var DATA = [];
+		function SubmitSearch(){
+			data = {
+				keywords : $("#searchbar").val()
+			}
+			$.ajax({
+				type: "POST",
+				url: "/search",
+				data: data,
+				success: function(msg, status, jqXHR){
+					if(status == "success"){
+						console.log(msg);
+						BuildResultTable(msg);
+					}
+				},
+				dataType: "JSON"
+			});
+		}
+
+		function SubmitFoodItem(brand, item){
+			data = {
+				item : item,
+				brand : brand
+			}
+			$.ajax({
+				type: "POST",
+				url: "/findfood",
+				data: data,
+				success: function(msg, status, jqXHR){
+					if(status == "success"){
+						alert("Successssss");
+						console.log(msg);
+					} else {
+						alert("Nope.");
+					}
+				},
+				dataType: "JSON"
+			});
+		}
+		
+		function BuildResultTable(data){
+			DATA = data.results;
+			for(var i = 0; i < data.results.length; i++){
+				console.log(data);
+				$("#SearchTable").append("<tr onclick=\"SelectRecipe("+ i + ")\"><td>" + data.results[i].recipe.label + "</td><td style='text-align: right;'><img src='" + data.results[i].recipe.image  + "' height='50' width='50'></img></td></tr>");
+			}
+		}
+
+		function Back(){
+			$("#details").fadeOut(200, "swing", function(){
+				$("#listings").fadeIn(200, "swing", function(){});
+			});
+		}
+
+		function SelectRecipe(index){
+
+			var data = DATA[index];
+			console.log(data);
+
+			for(var i = 0; i < data.recipe.ingredients.length; i++){
+				$("#ingredient_anchor").append("");
+			}
+
+			$("#listings").fadeOut(200, "swing", function(){
+				$("#details").fadeIn(200, "swing", function(){});
+			});
+		}
+
+
 	#my_container.fatsecret_container
 
 	#map
 		script( src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false")
 		script.
 			initMap(!{JSON.stringify(coords)})
+	
+
+	.main-side-bar
+		#listings
 			
+			.input-group
+				input.form-control#searchbar(type="text", placeholder="search", tabindex="2", name="keywords")
+				.input-group-btn
+					button.btn.btn-default.search-button(type="button", onclick="SubmitSearch()")
+						i.glyphicon.glyphicon-search
+
+			br
+			.scrollable(style='max-height: 550px;')
+				table.datatable
+					tbody#SearchTable
+
+		#details.scrollable(style='display:none;')
+			button.btn.btn-primary.regular-button(style='width: 100px;', onclick='Back()')
+				i.fa.fa-angle-left(style='margin-right: 15px')
+				| Back 
+
+			.ingredients
+				table
+					tbody#ingredient_anchor
+
+			.radarChart
+
+
+	script.
+
+		var margin = {top: 100, right: 50, bottom: 100, left: 80},
+		width = Math.min(400, window.innerWidth - 10) - margin.left - margin.right,
+		height = Math.min(width, window.innerHeight - margin.top - margin.bottom - 20);
+				
+		////////////////////////////////////////////////////////////// 
+		////////////////////////// Data ////////////////////////////// 
+		////////////////////////////////////////////////////////////// 
+
+		var data = [
+					[//iPhone
+					{axis:"Battery Life",value:0.22},
+					{axis:"Brand",value:0.28},
+					{axis:"Contract Cost",value:0.29},
+					{axis:"Design And Quality",value:0.17},
+					{axis:"Have Internet Connectivity",value:0.22},
+					{axis:"Large Screen",value:0.02},
+					{axis:"Price Of Device",value:0.21},
+					{axis:"To Be A Smartphone",value:0.50}			
+					]
+				];
+		////////////////////////////////////////////////////////////// 
+		//////////////////// Draw the Chart ////////////////////////// 
+		////////////////////////////////////////////////////////////// 
+
+		var color = d3.scale.ordinal()
+			.range(["#EDC951","#CC333F","#00A0B0"]);
+			
+		var radarChartOptions = {
+			w: width,
+			h: height,
+			margin: margin,
+			maxValue: 0.5,
+			levels: 5,
+			roundStrokes: true,
+			color: color
+		};
+		//Call function to draw the Radar chart
+		RadarChart(".radarChart", data, radarChartOptions);

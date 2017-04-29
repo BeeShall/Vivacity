@@ -1,4 +1,29 @@
 var request = require("request");
+var NutritionixClient = require('nutritionix');
+
+var nutritionix = new NutritionixClient({
+    appId: '807ee049',
+    appKey: '9f22ea3676ac9797aa491ef338ac0cf1'
+});
+
+
+exports.search = function(query, callback){
+    url = "https://api.edamam.com/search?q=" + query + "&app_id=d935592e&app_key=dfbf374e567d38f4076d719220f25df9";
+
+    request(url, function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+            var data = JSON.parse(body).hits;
+            callback(data);
+        }
+        else {
+            console.log(error);
+        }
+    });
+}
+
+
+
+
 
 exports.searchNutritionItem = function(item_name, max, callback){
     var results = "Nice";

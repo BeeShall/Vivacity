@@ -21,12 +21,14 @@
     "mongodb": "^2.2.22",
     "morgan": "~1.7.0",
     "node-geocoder": "^3.16.0",
+    "nutritionix": "^0.6.1",
     "passport": "~0.1.17",
     "passport-local": "~0.1.6",
     "pug": "^2.0.0-beta11",
     "request": "^2.81.0",
     "serve-favicon": "~2.3.0",
     "stopword": "*",
-    "words-and-hyphens": "*"
+    "words-and-hyphens": "*",
+    "xml2js": "^0.4.17"
   }
 }
