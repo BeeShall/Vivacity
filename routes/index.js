@@ -16,8 +16,6 @@ var geocoder = NodeGeocoder(geooptions);
 
 
 var ensureLoggedIn = function (req, res, next) {
-	next();
-	return;
   if (req.user) {
     next();
   } else {
@@ -48,9 +46,13 @@ function GetNearby(coords, callback){
 
 router.post('/addfood', function(req, res, next){
 
-	console.log("nice");
-	res.send("success");
+	console.log(req.body.name);
+	console.log(req.body.ndbno);
 
+	db.AddFood(req.user, req.body.name, req.body.ndbno, function(){
+  		res.setHeader('Content-Type', 'application/json');
+	    res.send({success: true});	
+		});
 });
 
 

@@ -7,9 +7,9 @@ block content
 
 		function addsuccess(){
 			console.log("Nice");
-			$(".success-bar").animate({display : "block"}, 500,"swing", setTimeout(function(){
-				$(".success-bar").animate({display : "none"}, 500,"swing", function(){});
-			}, 3000));
+			$(".success-bar").fadeIn(400, window.setTimeout(function(){
+				$(".success-bar").fadeOut(400, function(){});
+			}, 2000));
 		}
 
 		function AddFood(ndbno, name){
@@ -23,7 +23,9 @@ block content
 				data: data,
 				success: addsuccess,
 				dataType: "JSON"
-			});
+			}).done(function() {
+				addsuccess();
+			})
 		}
 
 

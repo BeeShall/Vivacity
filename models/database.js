@@ -16,6 +16,7 @@ MongoClient.connect(url, function (err, database) {
 
 
 exports.AddFood = function(userid, foodname, foodid, callback){
+    console.log("hey");
     db.collection('users').update({
         _id : ObjectID(userid)
     }, 
@@ -24,8 +25,9 @@ exports.AddFood = function(userid, foodname, foodid, callback){
     function (err, results) {
         if (!err) {
             callback();
+            console.log("okay");
         } else console.log(err)
-    });   
+    });
 }
 
 exports.createUser = function (userName, password, email, callBack) {
